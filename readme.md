@@ -1,3 +1,9 @@
+## 编译记录
+
+1. 编译时要指定 `cmake -DPYTHON_EXECUTABLE=/usr/bin/python3 ..`
+2. Pangolin不能使用v0.6及之前的版本 
+3. g2o要在thirdparty中重新编译
+
 ## SLAM in Autonomous Driving book (SAD book)
 
 本书向读者系统介绍了惯性导航、组合导航、激光建图、激光定位、激光惯导里程计等知识。本仓库是书籍对应的源代码仓库，可以公开使用。

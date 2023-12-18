@@ -1,0 +1,16 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ],
+    "files.exclude": { //左侧文件树排除文件
+        ".vscode/*": false,
+        "build*/": false,
+        "install*/": false,
+        "log*/": true,
+    },
+    "files.associations": {
+        "*.m": "matlab",
+        "*.json": "jsonc",
+        "*.ipp": "cpp"
+    },
+}
