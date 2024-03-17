@@ -70,21 +70,30 @@ std::string RosbagIO::GetLidarTopicName() const {
 }
 
 void RosbagIO::Go() {
+    // 打印输出
+    LOG(INFO) << "running in " << bag_file_ << ", num of register process func: " << process_func_.size()
+              << ", current path is " << std::filesystem::current_path();
+    // 创建rosbag对象并打开文件
     rosbag::Bag bag(bag_file_);
-    LOG(INFO) << "running in " << bag_file_ << ", reg process func: " << process_func_.size();
 
     if (!bag.isOpen()) {
         LOG(ERROR) << "cannot open " << bag_file_;
         return;
     }
 
+    // 创建rosbag的view对象, 用于遍历bag中的消息
     auto view = rosbag::View(bag);
+    // 遍历bag中每帧中的每条消息, 每个rosbag::MessageInstance对象包含了消息的topic, type, time, data等信息
     for (const rosbag::MessageInstance &m : view) {
+        // 查找map容器process_func_中是否有该topic的处理函数, 如果有返回指向该元素的迭代器, 否则返回end()
         auto iter = process_func_.find(m.getTopic());
+        // 如果返回的不是end(), 则说明找到了该topic的处理函数
         if (iter != process_func_.end()) {
+            // 调用该topic的处理函数, 并传入消息
             iter->second(m);
         }
 
+        // 如果其他地方更改全局变量FLAG_EXIT为true, 则退出
         if (global::FLAG_EXIT) {
             break;
         }

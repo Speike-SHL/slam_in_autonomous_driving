@@ -10,7 +10,7 @@
 namespace sad {
 
 /**
- * 计算本书的GNSS读数对应的UTM pose和六自由度Pose
+ * 计算本书的GNSS读数对应的UTM pose和六自由度Pose. 不包括高度
  * @param gnss_reading  输入gnss读数
  * @param antenna_pos   安装位置
  * @param antenna_angle 安装偏角
@@ -28,18 +28,19 @@ bool ConvertGps2UTM(GNSS& gnss_reading, const Vec2d& antenna_pos, const double& 
 bool ConvertGps2UTMOnlyTrans(GNSS& gnss_reading);
 
 /**
- * 经纬度转UTM
- * NOTE 经纬度单位为度数
- * @param latlon
- * @param utm_coor
+ * 经纬度转UTM坐标, 包括UTM区域、xy坐标、是否在北半球
+ * @note 经纬度单位为度数
+ * @param latlon 经纬度
+ * @param utm_coor UTM坐标
  * @return
  */
 bool LatLon2UTM(const Vec2d& latlon, UTMCoordinate& utm_coor);
 
 /**
  * UTM转经纬度
- * @param utm_coor
- * @param latlon
+ * @note 经纬度单位为度数
+ * @param utm_coor 经纬度
+ * @param latlon UTM坐标
  * @return
  */
 bool UTM2LatLon(const UTMCoordinate& utm_coor, Vec2d& latlon);

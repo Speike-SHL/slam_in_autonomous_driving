@@ -21,7 +21,7 @@ enum class GpsStatusType {
     GNSS_OTHER = -1,                 // 其他
 };
 
-/// UTM 坐标
+/// UTM 坐标, 包括UTM区域、xy坐标、高度、是否在北半球
 struct UTMCoordinate {
     UTMCoordinate() = default;
     explicit UTMCoordinate(int zone, const Vec2d& xy = Vec2d::Zero(), bool north = true)

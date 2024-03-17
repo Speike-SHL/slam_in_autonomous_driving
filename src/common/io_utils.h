@@ -8,6 +8,7 @@
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
 #include <sensor_msgs/LaserScan.h>
+#include <filesystem>
 #include <fstream>
 #include <functional>
 #include <utility>
@@ -25,6 +26,8 @@
 
 #include "ch3/utm_convert.h"
 
+using namespace std;
+
 namespace sad {
 
 /**
@@ -32,7 +35,7 @@ namespace sad {
  * 数据文本文件主要提供IMU/Odom/GNSS读数
  */
 class TxtIO {
-   public:
+public:
     TxtIO(const std::string &file_path) : fin(file_path) {}
 
     /// 定义回调函数
@@ -41,7 +44,7 @@ class TxtIO {
     using GNSSProcessFuncType = std::function<void(const GNSS &)>;
 
     TxtIO &SetIMUProcessFunc(IMUProcessFuncType imu_proc) {
-        imu_proc_ = std::move(imu_proc);
+        imu_proc_ = std::move(imu_proc);    // 将imu_proc的所有权转移到imu_proc_
         return *this;
     }
 
@@ -58,7 +61,7 @@ class TxtIO {
     // 遍历文件内容，调用回调函数
     void Go();
 
-   private:
+private:
     std::ifstream fin;
     IMUProcessFuncType imu_proc_;
     OdomProcessFuncType odom_proc_;
@@ -70,7 +73,8 @@ class TxtIO {
  * 指定一个包名，添加一些回调函数，就可以顺序遍历这个包
  */
 class RosbagIO {
-   public:
+public:
+    /// 构造函数,指定数据包路径和数据集类型
     explicit RosbagIO(std::string bag_file, DatasetType dataset_type = DatasetType::NCLT)
         : bag_file_(std::move(bag_file)), dataset_type_(dataset_type) {
         assert(dataset_type_ != DatasetType::UNKNOWN);
@@ -88,22 +92,36 @@ class RosbagIO {
     using OdomHandle = std::function<bool(const Odom &)>;
     using LivoxHandle = std::function<bool(const livox_ros_driver::CustomMsg::ConstPtr &msg)>;
 
-    // 遍历文件内容，调用回调函数
+    /// 打开bag文件,遍历每帧中的每条消息,然后调用对应的回调函数
     void Go();
 
-    /// 通用处理函数
+    /**
+     * @brief AddHandle 通用处理函数, 用于绑定topic和对应的处理函数
+     * @param topic_name topic名称
+     * @param func 处理函数
+     * @return 类的引用, 用于链式调用
+     */
     RosbagIO &AddHandle(const std::string &topic_name, MessageProcessFunction func) {
+        // 把topic名称和处理函数绑定添加到map容器中
         process_func_.emplace(topic_name, func);
         return *this;
     }
 
-    /// 2D激光处理
+    /**
+     * @brief AddScan2DHandle 2D激光处理
+     * @param topic_name topic名称
+     * @param f 回调函数
+     * @return 类的引用, 用于链式调用
+     */
     RosbagIO &AddScan2DHandle(const std::string &topic_name, Scan2DHandle f) {
+        // 调用AddHandle函数, 并传入一个用lambda表达式定义的回调函数func
         return AddHandle(topic_name, [f](const rosbag::MessageInstance &m) -> bool {
+            // 把rosbag中的消息转换为sensor_msgs::LaserScan类型
             auto msg = m.instantiate<sensor_msgs::LaserScan>();
             if (msg == nullptr) {
                 return false;
             }
+            // 把sensor_msgs::LaserScan类型的消息传入回调函数f
             return f(msg);
         });
     }
@@ -215,13 +233,14 @@ class RosbagIO {
     /// 清除现有的处理函数
     void CleanProcessFunc() { process_func_.clear(); }
 
-   private:
+private:
     /// 根据设定的数据集名称获取雷达名
     std::string GetLidarTopicName() const;
 
     /// 根据数据集名称确定IMU topic名称
     std::string GetIMUTopicName() const;
 
+    /// map 容器, 键为topic名称, 值为对应的处理函数
     std::map<std::string, MessageProcessFunction> process_func_;
     std::string bag_file_;
     DatasetType dataset_type_;

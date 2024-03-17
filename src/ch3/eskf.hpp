@@ -27,7 +27,7 @@ namespace sad {
  */
 template <typename S = double>
 class ESKF {
-   public:
+public:
     /// 类型定义
     using SO3 = Sophus::SO3<S>;                     // 旋转变量类型
     using VecT = Eigen::Matrix<S, 3, 1>;            // 向量类型
@@ -130,7 +130,7 @@ class ESKF {
     /// 获取重力
     Vec3d GetGravity() const { return g_; }
 
-   private:
+private:
     void BuildNoise(const Options& options) {
         double ev = options.acce_var_;
         double et = options.gyro_var_;
@@ -266,7 +266,7 @@ bool ESKF<S>::ObserveWheelSpeed(const Odom& odom) {
     // 卡尔曼增益
     Eigen::Matrix<S, 18, 3> K = cov_ * H.transpose() * (H * cov_ * H.transpose() + odom_noise_).inverse();
 
-    // velocity obs
+    // velocity obs 计算轮速, 课本公式3.76
     double velo_l = options_.wheel_radius_ * odom.left_pulse_ / options_.circle_pulse_ * 2 * M_PI / options_.odom_span_;
     double velo_r =
         options_.wheel_radius_ * odom.right_pulse_ / options_.circle_pulse_ * 2 * M_PI / options_.odom_span_;
@@ -296,7 +296,6 @@ bool ESKF<S>::ObserveGps(const GNSS& gnss) {
         current_time_ = gnss.unix_time_;
         return true;
     }
-
     assert(gnss.heading_valid_);
     ObserveSE3(gnss.utm_pose_, options_.gnss_pos_noise_, options_.gnss_ang_noise_);
     current_time_ = gnss.unix_time_;

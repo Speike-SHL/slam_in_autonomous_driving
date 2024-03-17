@@ -15,11 +15,11 @@ target_link_libraries(${PROJECT_NAME}.ch6
         ${PROJECT_NAME}.common
         )
 
-add_executable(test_2dlidar_io
-        test_2dlidar_io.cc
+add_executable(6.2.1_test_2dlidar_io
+        6.2.1_test_2dlidar_io.cc
         )
 
-target_link_libraries(test_2dlidar_io
+target_link_libraries(6.2.1_test_2dlidar_io
         ${PROJECT_NAME}.ch6
         ${OpenCV_LIBS}
         ${catkin_LIBRARIES}

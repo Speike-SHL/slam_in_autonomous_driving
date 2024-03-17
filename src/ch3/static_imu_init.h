@@ -22,7 +22,7 @@ namespace sad {
  * 初始化器收集一段时间内的IMU读数，按照书本3.5.4节估计初始零偏和噪声参数，提供给ESKF或者其他滤波器
  */
 class StaticIMUInit {
-   public:
+public:
     struct Options {
         Options() {}
         double init_time_seconds_ = 10.0;     // 静止时间
@@ -52,7 +52,7 @@ class StaticIMUInit {
     Vec3d GetInitBa() const { return init_ba_; }
     Vec3d GetGravity() const { return gravity_; }
 
-   private:
+private:
     /// 尝试对系统初始化
     bool TryInit();
 

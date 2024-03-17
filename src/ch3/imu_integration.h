@@ -15,7 +15,7 @@ namespace sad {
  * 本程序演示单纯靠IMU的积分
  */
 class IMUIntegration {
-   public:
+public:
     IMUIntegration(const Vec3d& gravity, const Vec3d& init_bg, const Vec3d& init_ba)
         : gravity_(gravity), bg_(init_bg), ba_(init_ba) {}
 
@@ -40,7 +40,7 @@ class IMUIntegration {
     Vec3d GetV() const { return v_; }
     Vec3d GetP() const { return p_; }
 
-   private:
+private:
     // 累计量
     SO3 R_;
     Vec3d v_ = Vec3d::Zero();

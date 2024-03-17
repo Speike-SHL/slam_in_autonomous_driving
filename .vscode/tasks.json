@@ -28,6 +28,7 @@
             "command": "cmake",
             "args": [
                 "-DPYTHON_EXECUTABLE=/usr/bin/python3",
+                "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
                 ".."
             ]
         },
@@ -36,7 +37,7 @@
             "type": "shell",
             "command": "make",
             "args": [
-                "-j2"
+                "-j6"
             ]
         },
         {

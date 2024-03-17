@@ -1,4 +1,4 @@
-## 编译记录
+## 编译记录(me)
 
 1. 编译时要指定 `cmake -DPYTHON_EXECUTABLE=/usr/bin/python3 ..`
 2. Pangolin不能使用v0.6及之前的版本 

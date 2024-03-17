@@ -18,6 +18,22 @@
 #include "velodyne_msgs/VelodyneScan.h"
 
 /// 雷达扫描的一些消息定义和工具函数
+/**
+ * sensor_msgs::LaserScan的数据结构
+ *  std_msgs/Header header
+ *      uint32 seq
+ *      time stamp
+ *      string frame_id
+ *  float32 angle_min : scan的初始角度，不一定为0或pi
+ *  float32 angle_max : scan的最大角度
+ *  float32 angle_increment : scan的角度分辨率
+ *  float32 time_increment : scan的时间分辨率
+ *  float32 scan_time : scan的持续时间
+ *  float32 range_min : scan的最小距离
+ *  float32 range_max : scan的最大距离
+ *  float32[] ranges : scan的距离值
+ *  float32[] intensities : scan的强度值
+ */
 using Scan2d = sensor_msgs::LaserScan;
 using MultiScan2d = sensor_msgs::MultiEchoLaserScan;
 using PacketsMsg = velodyne_msgs::VelodyneScan;
